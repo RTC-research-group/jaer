@@ -22,6 +22,7 @@ import net.sf.jaer.hardwareinterface.usb.cypressfx2.USBIOHardwareInterfaceFactor
 import net.sf.jaer.hardwareinterface.usb.cypressfx2libusb.LibUsbHardwareInterfaceFactory;
 import net.sf.jaer.hardwareinterface.usb.cypressfx3libusb.LibUsb3HardwareInterfaceFactory;
 import net.sf.jaer.hardwareinterface.usb.silabs.SiLabs_USBIO_C8051F3xxFactory;
+import es.us.atc.jaer.hardwareinterface.OpalKellyFX2MonitorFactory;
 import de.thesycon.usbio.PnPNotifyInterface;
 
 /**
@@ -52,6 +53,7 @@ HardwareInterfaceFactoryInterface, PnPNotifyInterface {
 		UDPInterfaceFactory.class,
 		eDVS128_InterfaceFactory.class,
 		SpiNNaker_InterfaceFactory.class,
+                OpalKellyFX2MonitorFactory.class,
 	};
 	private static HardwareInterfaceFactory instance = new HardwareInterfaceFactory();
 
