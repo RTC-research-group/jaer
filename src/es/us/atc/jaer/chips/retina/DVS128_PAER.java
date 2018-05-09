@@ -295,6 +295,7 @@ public class DVS128_PAER extends AETemporalConstastRetina implements Serializabl
 
             if (ledMenu == null) {
                 ledMenu = new JMenu("LED control");
+                ledMenu.getPopupMenu().setLightWeightPopupEnabled(false);
                 ledMenu.setToolTipText("LED control");
                 final HasLEDControl h = (HasLEDControl) getHardwareInterface();
                 ledOnBut = new JRadioButtonMenuItem("Turn LED on");
@@ -418,14 +419,14 @@ public class DVS128_PAER extends AETemporalConstastRetina implements Serializabl
      */
     public class Extractor extends RetinaExtractor {
 
-        final int XMASK = 0xfe00, XSHIFT = 8, YMASK = 0x007f, YSHIFT = 0;
+        final short XMASK = 0x00fe, XSHIFT = 1, YMASK = 0x7f00, YSHIFT = 8;
 
         public Extractor(DVS128_PAER chip) {
             super(chip);
-            setXmask((short) 0x00fe);
-            setXshift((byte) 1);
-            setYmask((short) 0x7f00);
-            setYshift((byte) 8);
+            setXmask((short) XMASK);
+            setXshift((byte) XSHIFT);
+            setYmask((short) YMASK);
+            setYshift((byte) YSHIFT);
             setTypemask((short) 1);
             setTypeshift((byte) 0);
             setFlipx(true);
@@ -498,6 +499,7 @@ public class DVS128_PAER extends AETemporalConstastRetina implements Serializabl
             for (int i = 0; i < n; i += skipBy) { // TODO bug here?
                 int addr = a[i]; // TODO handle special events from hardware correctly
                 PolarityEvent e = (PolarityEvent) outItr.nextOutput();
+                addr = ((addr & 0x00FF) << 8) + ((addr & 0xFF00) >> 8);
                 e.address = addr;
                 e.timestamp = (timestamps[i]);
 
