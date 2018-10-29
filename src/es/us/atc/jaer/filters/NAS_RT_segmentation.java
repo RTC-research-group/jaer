@@ -47,7 +47,6 @@ public class NAS_RT_segmentation extends EventFilter2D {
     public NAS_RT_segmentation(AEChip chip) {
         super(chip);
 
-        //final String parameters = "Parameters";
         setPropertyTooltip("Parameters", "channels", "Select the number of channels of the NAS.");
         setPropertyTooltip("Parameters", "binWidth", "Select the bin_width to be used in the segmentation.");
         setPropertyTooltip("Parameters", "threshold", "Select the threshold to be used in the segmentation.");
@@ -62,14 +61,12 @@ public class NAS_RT_segmentation extends EventFilter2D {
     synchronized public EventPacket<?> filterPacket(EventPacket<?> in) {
         checkOutputPacketEventType(in);
         OutputEventIterator outItr = out.outputIterator();
-        for (BasicEvent e : in) {
-            
+        for (BasicEvent e : in) {            
             try {
                 BasicEvent i = (BasicEvent) e;
                    
                 int ts = i.timestamp;
                 int addr = i.address;
-                //System.out.println("ts: " + i.timestamp + ", addr. " + i.address);
 
                 shift = buff_th_addr[0];
                 System.arraycopy(buff_th_addr, 1, buff_th_addr, 0, threshold - 1);
@@ -103,14 +100,11 @@ public class NAS_RT_segmentation extends EventFilter2D {
                 } else {
                     first_time = 1;
                 }
-
-
             } catch (Exception e1) {
                 log.warning("In for-loop in filterPacket caught exception " + e1);
                 e1.printStackTrace();
             }
-        }
-        
+        }        
         return out;
     }    
 
