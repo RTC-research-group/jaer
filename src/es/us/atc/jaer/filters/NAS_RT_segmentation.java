@@ -69,6 +69,7 @@ public class NAS_RT_segmentation extends EventFilter2D {
                    
                 int ts = i.timestamp;
                 int addr = i.address;
+                //System.out.println("ts: " + i.timestamp + ", addr. " + i.address);
 
                 shift = buff_th_addr[0];
                 System.arraycopy(buff_th_addr, 1, buff_th_addr, 0, threshold - 1);
@@ -85,10 +86,13 @@ public class NAS_RT_segmentation extends EventFilter2D {
 
                 if (((ts - buff_th_ts[0]) <= binWidth * 1000) && (spikes_processed >= threshold)) {
                     if (first_time == 1) {
-                        for (int spk = 1; spk < threshold; spk++) {
-                            i.setTimestamp(ts + binWidth * 1000);
+                        for (int spk = 0; spk < threshold; spk++) {
+                            BasicEvent n = (BasicEvent) i;
+                            n.timestamp = buff_th_ts[spk] + binWidth *  1000;
+                            n.address = buff_th_addr[spk];
+                            
                             BasicEvent o = (BasicEvent) outItr.nextOutput();                
-                            o.copyFrom(i);
+                            o.copyFrom(n);
                         }
                         first_time = 0;
                     } else {
@@ -98,7 +102,6 @@ public class NAS_RT_segmentation extends EventFilter2D {
                     }
                 } else {
                     first_time = 1;
-                    //spikes_processed = 0; <-- maybe it's interesting to add this.
                 }
 
 
