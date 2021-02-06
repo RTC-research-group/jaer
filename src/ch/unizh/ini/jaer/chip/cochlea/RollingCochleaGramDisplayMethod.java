@@ -35,6 +35,8 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 
         public static final String EVENT_SCREEN_CLEARED="RollingCochleaGramDisplayMethod.EVENT_SCREEN_CLEARED";
 
+        public int ntaps=0;
+        public AEChipRenderer renderer = null;
 	/**
 	 * Creates a new instance of CochleaGramDisplayMethod
 	 *
@@ -42,6 +44,7 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 	 */
 	public RollingCochleaGramDisplayMethod(ChipCanvas c) {
 		super(c);
+                
 	}
 	final float rasterWidth = 0.003f; // width of screen;
 	final int BORDER = 50; // pixels
@@ -70,8 +73,9 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 	 */
 	@Override
 	public void display(GLAutoDrawable drawable) {
-		AEChipRenderer renderer = (AEChipRenderer) getChipCanvas().getRenderer();
-		int ntaps = chip.getSizeX();
+		renderer = (AEChipRenderer) getChipCanvas().getRenderer();
+                ntaps = chip.getSizeX();		
+
 		EventPacket ae = (EventPacket) chip.getLastData();
 		if ((ae == null) || ae.isEmpty()) {
 			return;
@@ -189,11 +193,8 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 
 		final float w = timeWidthUs / getChipCanvas().getCanvas().getWidth(); // spike raster as fraction of screen width
 		float[][] typeColors = renderer.getTypeColorRGBComponents();
-		if(typeColors==null) {
-			log.warning("null event type colors typeColors passed back from renderer, will not render samples");
-			return;
-		}
-		try {
+
+	
 			for (Object o : ae) {
 				TypedEvent ev = (TypedEvent) o;
 				gl.glColor3fv(typeColors[ev.type], 0);// FIXME depends on these colors having been created by a rendering cycle...
@@ -204,17 +205,13 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 					clearScreenEnabled = true;
 				}
 			}
-		} catch (NullPointerException ex) {
-			log.warning("caught a null pointer exception while rendering events, probably colors of events not fully instantiated yet");
-		}
+	
 
 
 
 		gl.glFlush();
-		//        log.info("after flush, timeWidthUs="+timeWidthUs+" ");
-		//        gl.glFinish();  // should not need to be called, according to http://www.opengl.org/discussion_boards/ubbthreads.php?ubb=showflat&Number=196733
 
-		getChipCanvas().checkGLError(gl, glu, "after RollingCochleaGramDisplayMethod");
+
 	}
 
 	// called at end of drawing rasters across screen
@@ -258,11 +255,11 @@ public class RollingCochleaGramDisplayMethod extends DisplayMethod implements Di
 		this.selectedChannel = selectedChannel;
 	}
 
-	private float sc=.8f;
-	private float[] redSel={sc,0,0}, greenSel={0,sc,0};
+	private float sc=1.0f;
+	private float[] blueSel={0,0,sc}, greenSel={0,sc,0};
 	private float[] getSelColor(int channel){
-		if((channel%2)==1) {
-			return redSel;
+		if((channel)==1) {
+			return blueSel;
 		}
 		else {
 			return greenSel;

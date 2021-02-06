@@ -47,7 +47,7 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 		super(c);
 	}
 
-	final float rasterWidth=0.006f; // width of each spike in raster plot
+	final float rasterWidth=0.001f; // width of each spike in raster plot
 
 	/** Border around raster plot in pixels. */
 	public static final int BORDER=50; // pixels
@@ -111,16 +111,7 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 		}
 		gl.glEnd();
 		// draw axes labels x,y,t. See tutorial at http://jerome.jouvie.free.fr/OpenGl/Tutorials/Tutorial18.php
-		int font = GLUT.BITMAP_HELVETICA_18;
-		gl.glPushMatrix();
-		{
-			final int FS = 1; // distance in pixels of text from endZoom of axis
-			gl.glRasterPos3f(0, chip.getSizeX(), 0);
-			glut.glutBitmapString(font, "Channel");
-			gl.glRasterPos3f(1, 0, 0);
-			glut.glutBitmapString(font, "Time");
-		}
-		gl.glPopMatrix();
+
 
 		// render events
 
@@ -152,6 +143,20 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 			log.warning("caught "+npe.toString()+", need a rendering cycle to create event type colors");
 		}
 
+                
+                int font = GLUT.BITMAP_HELVETICA_18;
+		gl.glPushMatrix();
+		{ 
+			final int FS = 1; // distance in pixels of text from endZoom of axis
+                        gl.glColor3f(1, 1, 1);
+			gl.glRasterPos3f(0, chip.getSizeX(), 0);
+			glut.glutBitmapString(font, "Rigth");
+                        gl.glRasterPos3f(0, (chip.getSizeX()/2)-4, 0);
+			glut.glutBitmapString(font, "Left");
+			gl.glRasterPos3f(1, 0, 0);
+			glut.glutBitmapString(font, "Time");
+		}
+		gl.glPopMatrix();
 		// draw selected channel
 		if (getSelectedChannel() >= 0) {
 			final float sc = .8f;
