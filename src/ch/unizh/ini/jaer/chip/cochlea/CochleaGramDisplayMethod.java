@@ -101,13 +101,17 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 		// draw axes
 		gl.glColor3f(0, 0, 1);
 		gl.glLineWidth(1f);
-		int len = chip.getSizeX() - 3;
+		int len = chip.getSizeX();
 		gl.glBegin(GL.GL_LINES);
 		{
 			gl.glVertex3f(0, 0, 0);
 			gl.glVertex3f(0, len, 0); // taps axis
-			gl.glVertex3f(0, 0, 0);
+			
+                        gl.glVertex3f(0, 0, 0);
 			gl.glVertex3f(1, 0, 0); // time axis
+                        
+                        gl.glVertex3f(0, len/2, 0);
+                        gl.glVertex3f(1, len/2, 0); // middle axis
 		}
 		gl.glEnd();
 		// draw axes labels x,y,t. See tutorial at http://jerome.jouvie.free.fr/OpenGl/Tutorials/Tutorial18.php
@@ -131,7 +135,7 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 		try {
 			for (Object o : ae) {
 				TypedEvent ev = (TypedEvent) o;
-				gl.glColor3fv(typeColors[ev.type], 0); // TODO depends on these colors having been created by a rendering cycle...
+                                gl.glColor3fv(getSelColor(ev.address), 0);
 				//            CochleaGramDisplayMethod.typeColor(gl, ev.type);
 				//            if(ev.type==0) gl.glColor4f(1,0,0,alpha); else gl.glColor4f(0,1,0,alpha); // red right
 				z = (float) (ev.timestamp-t0) / dt; // z goes from 0 (oldest) to 1 (youngest)
@@ -149,9 +153,9 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 		{ 
 			final int FS = 1; // distance in pixels of text from endZoom of axis
                         gl.glColor3f(1, 1, 1);
-			gl.glRasterPos3f(0, chip.getSizeX(), 0);
+			gl.glRasterPos3f(0.005f, chip.getSizeX(), 0);
 			glut.glutBitmapString(font, "Rigth");
-                        gl.glRasterPos3f(0, (chip.getSizeX()/2)-4, 0);
+                        gl.glRasterPos3f(0.005f, (chip.getSizeX()/2)-3, 0);
 			glut.glutBitmapString(font, "Left");
 			gl.glRasterPos3f(1, 0, 0);
 			glut.glutBitmapString(font, "Time");
@@ -175,7 +179,7 @@ public class CochleaGramDisplayMethod extends DisplayMethod implements DisplayMe
 
 	}
 
-	private float sc = .8f;
+	private float sc = 1.0f;
 	private float[] redSel = {sc, 0, 0}, greenSel = {0, sc, 0};
 
 	private float[] getSelColor(int channel) {
